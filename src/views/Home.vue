@@ -1,9 +1,10 @@
 <template>
-  <div class="questions-container">
-    <button @click="startExam()">Todas las preguntas</button>
-    <button @click="startExam(40)">40 preguntas</button>
+  <div class="questions-container" id="examen">
+    <button @click="startExam()">Examen con todas las preguntas</button>
+    <button @click="startExam(40)">Examen con 40 preguntas</button>
     <div v-for="question, index in questions" class="question"
-      :class="{ incorrect: showResults && question.answer != null && question.answer != question.correctAnswer }">
+      :class="{ incorrect: showResults && question.answer != null && question.answer != question.correctAnswer,
+      correct: showResults && question.answer != null && question.answer == question.correctAnswer  }">
       <div class="text">
         <b>{{index + 1}}.</b> 
         {{question.text}}
@@ -21,7 +22,7 @@
         <label :for="index+'NULL'"> No se</label>
       </div>
     </div>
-    <button @click="showResults = !showResults">Mostrar resultados</button>
+    <button id="resultados" @click="showResults = !showResults">Mostrar resultados</button>
     <div class="results" v-if="showResults">
       Correctas: {{totalCorrect}}
       <br>
@@ -30,6 +31,9 @@
       Sin contestar: {{totalNotAnswered}}
       <br>
       {{ result }}/{{questions.length}}
+    </div>
+    <div class="credits">
+      Made with ♥ by Tomas Martty
     </div>
   </div>
 </template>
@@ -75,9 +79,9 @@ export default {
   methods: {
     startExam(maxQuestions) {
       if (maxQuestions) {
-        this.questions = this.getRandom(this.questions, maxQuestions)
+        this.questions = this.getRandom(questions, maxQuestions)
       } else {
-        this.questions = this.getRandom(this.questions, this.questions.length)
+        this.questions = this.getRandom(questions, questions.length)
       }
       this.questions.forEach((question)=> {
         question.answer = null
@@ -132,5 +136,21 @@ export default {
   .incorrect {
     color: white;
     background-color: rgba(255,0,0,1);
+  }
+  .correct {
+    color: white;
+    background-color: rgba(0,155,0,1);
+  }
+  .credits {
+    text-align: right;
+    opacity: 0.2;
+    text-transform: uppercase;
+    font-size: 12px;
+    margin: 5% 0;
+    transition: all 0.4s;
+  }
+  .credits:hover {
+    opacity: 1;
+    cursor: default;
   }
 </style>
