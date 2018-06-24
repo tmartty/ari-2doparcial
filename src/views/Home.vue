@@ -1,7 +1,7 @@
 <template>
   <div class="questions-container" id="examen">
     <button @click="startExam()">Examen con todas las preguntas</button>
-    <button @click="startExam(40)">Examen con 40 preguntas</button>
+    <button @click="startExam(50)">Examen con 50 preguntas</button>
     <div v-for="question, index in questions" class="question"
       :class="{ incorrect: showResults && question.answer != null && question.answer != question.correctAnswer,
       correct: showResults && question.answer != null && question.answer == question.correctAnswer  }">
