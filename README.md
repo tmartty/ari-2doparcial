@@ -1,14 +1,14 @@
-# FCE UBA, Argentina - ARI 2do parcial
+# FCE UBA, Argentina - Administracion de Recursos Informaticos
 
-A small [Vue.js](https://vuejs.org/) project to practice for a true/false exam with 40 questions picked from 415 possible ones.
+A small [Vue.js](https://vuejs.org/) project to practice for true/false exams.
 
 ```bash
-git clone https://github.com/tmartty/ari-2doparcial.git
-cd ari-2doparcial
+git clone https://github.com/tmartty/ari-fce-uba.git
+cd ari-fce-uba
 npm install
 npm run serve
 ```
 
-Live demo @ https://ari-2doparcial.firebaseapp.com/
+Live demo @ https://ari-fce-uba.firebaseapp.com/
 
 Hosted with [Firebase](https://firebase.google.com/)

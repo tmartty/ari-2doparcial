@@ -1,7 +1,13 @@
 <template>
   <div class="questions-container" id="examen">
-    <button @click="startExam()">Examen con todas las preguntas</button>
-    <button @click="startExam(50)">Examen con 50 preguntas</button>
+    <div class="options">
+      <button class="btn" @click="selectExam(1)" :class="{active: currentParcial == 1}">1er Parcial</button>
+      <button class="btn" @click="selectExam(2)" :class="{active: currentParcial == 2}">2do Parcial</button>
+    </div>
+    <div class="options">
+      <button class="btn" @click="startExam()" :class="{active: this.questions.length != 50}">Todas las preguntas</button>
+      <button class="btn" @click="startExam(50)" :class="{active: this.questions.length == 50}">50 preguntas</button>
+    </div>
     <div v-for="question, index in questions" class="question"
       :class="{ incorrect: showResults && question.answer != null && question.answer != question.correctAnswer,
       correct: showResults && question.answer != null && question.answer == question.correctAnswer  }">
@@ -30,7 +36,9 @@
       <br>
       Sin contestar: {{totalNotAnswered}}
       <br>
-      {{ result }}/{{questions.length}}
+      <span :class="{ incorrect: result < 30, correct: result >= 30 }">
+        Resultado: {{ result }}/{{questions.length}}
+      </span>
     </div>
     <div class="credits">
       Made with ♥ by Tomas Martty
@@ -40,7 +48,8 @@
 
 <script>
 // @ is an alias to /src
-import questions from '@/questions.js'
+import questions_1er_parcial from '@/questions_1er_parcial.js'
+import questions_2do_parcial from '@/questions_2do_parcial.js'
 
 export default {
   name: 'home',
@@ -50,7 +59,9 @@ export default {
       totalCorrect: 0,
       totalIncorrect: 0,
       totalNotAnswered: 0,
-      questions: []
+      questions: [],
+      allQuestions: [],
+      currentParcial: 1
     }
   },
   computed: {
@@ -74,14 +85,15 @@ export default {
     }
   },
   mounted() {
-    this.questions = questions
+    this.allQuestions = questions_1er_parcial
+    this.questions = this.allQuestions
   },
   methods: {
     startExam(maxQuestions) {
       if (maxQuestions) {
-        this.questions = this.getRandom(questions, maxQuestions)
+        this.questions = this.getRandom(this.allQuestions, maxQuestions)
       } else {
-        this.questions = this.getRandom(questions, questions.length)
+        this.questions = this.getRandom(this.allQuestions, this.allQuestions.length)
       }
       this.questions.forEach((question)=> {
         question.answer = null
@@ -90,6 +102,20 @@ export default {
       this.totalIncorrect = 0
       this.totalNotAnswered = 0
       this.showResults = false
+    },
+    selectExam(number) {
+      if (number == 1) {
+        this.allQuestions = questions_1er_parcial
+        this.startExam(50)
+        this.currentParcial = 1
+        this.showResults = false
+      }
+      if (number == 2) {
+        this.allQuestions = questions_2do_parcial
+        this.startExam(50)
+        this.currentParcial = 2
+        this.showResults = false
+      }
     },
     getRandom(arr, n) {
       var result = new Array(n)
@@ -152,5 +178,22 @@ export default {
   .credits:hover {
     opacity: 1;
     cursor: default;
+  }
+  .options {
+    display: flex;
+    width: 100%;
+  }
+  .options .btn {
+    text-align: center;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    opacity: 0.2;
+    background: rgba(0,0,0,0.2);
+  }
+  .options .btn.active {
+    opacity: 1;
+    background: rgba(255,255,255) !important;
   }
 </style>
