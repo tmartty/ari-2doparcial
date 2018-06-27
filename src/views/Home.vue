@@ -1,9 +1,15 @@
 <template>
   <div class="questions-container" id="examen">
-    <div class="options">
-      <button class="btn" @click="selectExam(1)" :class="{active: currentParcial == 1}">1er Parcial</button>
-      <button class="btn" @click="selectExam(2)" :class="{active: currentParcial == 2}">2do Parcial</button>
+    <br>
+    <h3>Elegir temas</h3>
+    <div class="subjects">
+      <div class="subject" v-for="subject, index in allSubjects">
+        <input :id="index" type="checkbox" name="vehicle" :value="subject.questions" v-model="pickedSubjects">
+        <label :for="index">{{subject.subject}}</label>
+      </div>
     </div>
+    <br>
+    <h3>Elegir cantidad de preguntas</h3>
     <div class="options">
       <button class="btn" @click="startExam()" :class="{active: this.questions.length != 50}">Todas las preguntas</button>
       <button class="btn" @click="startExam(50)" :class="{active: this.questions.length == 50}">50 preguntas</button>
@@ -12,7 +18,7 @@
       :class="{ incorrect: showResults && question.answer != null && question.answer != question.correctAnswer,
       correct: showResults && question.answer != null && question.answer == question.correctAnswer  }">
       <div class="text">
-        <b>{{index + 1}}.</b> 
+        <b>{{index +1}}.</b> 
         {{question.text}}
       </div>
       <div class="option">
@@ -28,17 +34,22 @@
         <label :for="index+'NULL'"> No se</label>
       </div>
     </div>
-    <button id="resultados" @click="showResults = !showResults">Mostrar resultados</button>
+    <br>
+    <hr>
+    <button id="resultados" @click="showResults = !showResults">Mirá los resultados</button>
     <div class="results" v-if="showResults">
-      Correctas: {{totalCorrect}}
-      <br>
-      Incorrectas: {{totalIncorrect}}
-      <br>
-      Sin contestar: {{totalNotAnswered}}
-      <br>
-      <span :class="{ incorrect: result < 30, correct: result >= 30 }">
+      <div class="result">
+        Correctas: {{totalCorrect}}
+      </div>
+      <div class="result">
+        Incorrectas: {{totalIncorrect}}
+      </div>
+      <div class="result">
+        Sin contestar: {{totalNotAnswered}}
+      </div>
+      <div class="result" :class="{ incorrect: result < 30, correct: result >= 30 }">
         Resultado: {{ result }}/{{questions.length}}
-      </span>
+      </div>
     </div>
     <div class="credits">
       Made with ♥ by Tomas Martty
@@ -47,9 +58,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import questions_1er_parcial from '@/questions_1er_parcial.js'
-import questions_2do_parcial from '@/questions_2do_parcial.js'
+import questions_ordered_by_subject from '@/questions_ordered_by_subject.js'
 
 export default {
   name: 'home',
@@ -60,11 +69,21 @@ export default {
       totalIncorrect: 0,
       totalNotAnswered: 0,
       questions: [],
-      allQuestions: [],
-      currentParcial: 1
+      // allQuestions: [],
+      allSubjects: [],
+      pickedSubjects: []
     }
   },
   computed: {
+    allQuestions: function() {
+      var array = []
+      this.pickedSubjects.forEach((subject)=>{
+        subject.forEach((question)=>{
+          array.push(question)
+        })
+      })
+      return array
+    },
     result: function() {
       var correct = 0
       this.totalCorrect = 0
@@ -85,8 +104,11 @@ export default {
     }
   },
   mounted() {
-    this.allQuestions = questions_1er_parcial
-    this.questions = this.allQuestions
+    this.allSubjects = questions_ordered_by_subject.sort(function(a, b){
+      if(a.subject < b.subject) return -1;
+      if(a.subject > b.subject) return 1;
+      return 0;
+    })
   },
   methods: {
     startExam(maxQuestions) {
@@ -102,20 +124,6 @@ export default {
       this.totalIncorrect = 0
       this.totalNotAnswered = 0
       this.showResults = false
-    },
-    selectExam(number) {
-      if (number == 1) {
-        this.allQuestions = questions_1er_parcial
-        this.startExam(50)
-        this.currentParcial = 1
-        this.showResults = false
-      }
-      if (number == 2) {
-        this.allQuestions = questions_2do_parcial
-        this.startExam(50)
-        this.currentParcial = 2
-        this.showResults = false
-      }
     },
     getRandom(arr, n) {
       var result = new Array(n)
@@ -195,5 +203,49 @@ export default {
   .options .btn.active {
     opacity: 1;
     background: rgba(255,255,255) !important;
+  }
+  .subjects {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .subjects .subject {
+    width: 49%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    font-size: 12px;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+  .subjects .subject label {
+    align-items: center;
+    display: flex;
+    padding: 5px 0px;
+    height: 100%;
+  }
+  .subjects .subject:hover {
+    cursor: pointer;
+    background: rgba(0,0,0,0.05);
+  }
+  #resultados {
+    text-transform: uppercase;
+    width: 100%;
+    margin: 10px 0;
+    font-size: 18px;
+  }
+  .results {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .result {
+    text-align: center;
+    border: 1px solid #CCC;
+    width: 45%;
+    padding: 10px;
+    margin: 10px;
+    text-transform: uppercase;
   }
 </style>
