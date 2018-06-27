@@ -4,7 +4,7 @@
     <h3>Elegir temas</h3>
     <div class="subjects">
       <div class="subject" v-for="subject, index in allSubjects">
-        <input :id="index" type="checkbox" name="vehicle" :value="subject.questions" v-model="pickedSubjects">
+        <input :id="index" type="checkbox" :name="index" :value="subject.questions" v-model="pickedSubjects">
         <label :for="index">{{subject.subject}}</label>
       </div>
     </div>
@@ -211,12 +211,14 @@ export default {
   }
   .subjects .subject {
     width: 49%;
+    height: auto;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
     font-size: 12px;
     border: 1px solid rgba(0,0,0,0.05);
+    background-color: rgba(0,0,0,0.1);
   }
   .subjects .subject label {
     align-items: center;
@@ -225,8 +227,10 @@ export default {
     height: 100%;
   }
   .subjects .subject:hover {
-    cursor: pointer;
     background: rgba(0,0,0,0.05);
+  }
+  label:hover {
+    cursor: pointer;
   }
   #resultados {
     text-transform: uppercase;
@@ -247,5 +251,12 @@ export default {
     padding: 10px;
     margin: 10px;
     text-transform: uppercase;
+  }
+  input[type="checkbox"] {
+    display: none;
+  }
+  input:checked + label {
+    font-weight: bold;
+    background-color: #fff;
   }
 </style>
