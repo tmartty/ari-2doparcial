@@ -255,7 +255,7 @@ export default {
   input[type="checkbox"] {
     display: none;
   }
-  input:checked + label {
+  .subjects input:checked + label {
     font-weight: bold;
     background-color: #fff;
   }
